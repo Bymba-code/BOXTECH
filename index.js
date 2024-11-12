@@ -21,4 +21,4 @@ app.use("/api/v1",  categoryRoutes)
 
 app.use("/api/v1", productRoutes)
 
-app.listen(5000, console.log("App listening 5000"))
+app.listen(3000, console.log("App listening 3000"))
