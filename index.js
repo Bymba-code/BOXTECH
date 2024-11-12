@@ -10,8 +10,8 @@ const corsOptions = {
     origin: "*",
     methods: "GET, POST, PUT, DELETE",
     allowedHeaders: "Content-Type, Authorization",
-    credential: true,
-}
+    credentials: true,
+};
 
 
 
@@ -33,4 +33,4 @@ app.use("/api/v1",  categoryRoutes)
 
 app.use("/api/v1", productRoutes)
 
-app.listen(5000, console.log("App listening 5000"))
+app.listen(3000, console.log("App listening 3000"))
