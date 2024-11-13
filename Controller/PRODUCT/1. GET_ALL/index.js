@@ -4,7 +4,7 @@ const {executeQuery} = require("../../../DATABASE/index")
 const GET_ALL_PRODUCT = async (req, res) => {
     try 
     {
-        const query = "SELECT * FROM products"
+        const query = "SELECT p.*, AVG(pr.rating) AS rating FROM  products p LEFT JOIN product_rating pr ON p.id = pr.product_id GROUP BY p.id, p.product_name, p.price"
         
         const data = await executeQuery(query)
 
