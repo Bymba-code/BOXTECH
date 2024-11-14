@@ -14,7 +14,7 @@ const GET_BY_CATEGORY = async (req, res) => {
 
         // Construct the query
         const query = `
-            SELECT * FROM products WHERE categoryName = ? LIMIT ? OFFSET ?
+            SELECT * FROM products WHERE category_name = ? LIMIT ? OFFSET ?
         `;
 
         // Execute the query with the category name, limit, and offset
