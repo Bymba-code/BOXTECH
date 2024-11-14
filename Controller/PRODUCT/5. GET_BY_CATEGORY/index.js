@@ -14,7 +14,15 @@ const GET_BY_CATEGORY = async (req, res) => {
         const totalCount = countResult[0].totalCount;
 
         const maxPages = Math.ceil(totalCount / limit);
-
+        
+        if (isNaN(maxPages) || maxPages <= 0) {
+                    return res.status(500).json({
+                        success: false,
+                        data: null,
+                        message: "Invalid total count or page calculation error." // Error in page calculation
+                    });
+                }
+        page = Math.min(Math.max(page, 1), maxPages); 
         
         // Construct the query
         const query = "SELECT p.id, p.product_name, p.price, p.category_name, AVG(pr.rating) AS rating FROM products p LEFT JOIN product_rating pr ON p.id = pr.product_id WHERE p.category_name = ? GROUP BY p.id, p.product_name, p.price, p.category_name ORDER BY p.product_name LIMIT ? OFFSET ?"
