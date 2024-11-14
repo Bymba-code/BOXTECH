@@ -15,7 +15,7 @@ const GET_BY_CATEGORY = async (req, res) => {
         const totalCount = countResult[0].totalCount;
 
         // Calculate the maximum number of pages
-        const maxPages = Math.ceil(totalCount / limit);
+        const maxPages = Math.ceil(totalCount / parseInt(limit));
 
         // Ensure page number is within valid range
         page = Math.min(Math.max(page, 1), maxPages);  // Ensure page is between 1 and maxPages
