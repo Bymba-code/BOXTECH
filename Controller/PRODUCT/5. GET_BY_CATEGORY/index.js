@@ -3,9 +3,7 @@ const { executeQuery } = require("../../../DATABASE");
 const GET_BY_CATEGORY = async (req, res) => {
     try {
         const { categoryName } = req.params;
-        const { page = 2, pageSize = 10 } = req.query; // Get page and pageSize from query params
 
-        const offset = (page - 1) * pageSize;
 
         // Query to get paginated products
         const query = `
@@ -15,26 +13,11 @@ const GET_BY_CATEGORY = async (req, res) => {
             WHERE p.category_name = ?
             GROUP BY p.id, p.product_name, p.price, p.category_name
             ORDER BY p.product_name
-            LIMIT ? OFFSET ?
         `;
         
-        const data = await executeQuery(query, [categoryName, pageSize, offset]);
-
-        // Query to count the total number of products
-        const countQuery = `
-            SELECT COUNT(*) AS total
-            FROM products p
-            WHERE p.category_name = ?
-        `;
-        
-        const countData = await executeQuery(countQuery, [categoryName]);
-        const totalItems = countData[0].total;
-
-        // Calculate total number of pages
-        const totalPages = Math.ceil(totalItems / pageSize); // Round up the division result
-
-        // If no products are found
-        if (data.length === 0) {
+        const data = await executeQuery(query, [categoryName]);
+      
+            if (data.length === 0) {
             return res.status(404).json({
                 success: false,
                 data: null,
@@ -44,8 +27,6 @@ const GET_BY_CATEGORY = async (req, res) => {
             return res.status(200).json({
                 success: true,
                 data: data,
-                totalItems: totalItems,
-                totalPages: totalPages, // Add totalPages in the response
                 message: "Амжилттай"
             });
         }
