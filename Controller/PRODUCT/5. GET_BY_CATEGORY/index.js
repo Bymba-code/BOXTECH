@@ -13,9 +13,7 @@ const GET_BY_CATEGORY = async (req, res) => {
         const offset = (page - 1) * limit;
 
         // Construct the query
-        const query = `
-            SELECT * FROM products WHERE category_name = ? LIMIT ? OFFSET ?
-        `;
+        const query = `SELECT * FROM products WHERE category_name = 'Програм хангамж' LIMIT 10 OFFSET 1`;
 
         // Execute the query with the category name, limit, and offset
         const data = await executeQuery(query, [categoryName, limit, offset]);
