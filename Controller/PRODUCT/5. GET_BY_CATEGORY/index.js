@@ -9,6 +9,16 @@ const GET_BY_CATEGORY = async (req, res) => {
         const limit = parseInt(req.query.limit) || 10;  // Default to 10 items per page
         const offset = (page - 1) * limit;  // Calculate the offset
 
+        // Ensure that limit and offset are integers
+        if (isNaN(limit) || isNaN(offset)) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid pagination parameters"
+            });
+        }
+
+        console.log(`Executing query with parameters: [ ${categoryName}, ${limit}, ${offset} ]`);
+
         // Query to get the products for the specific category with pagination
         const query = `
             SELECT p.id, p.product_name, p.price, p.category_name, AVG(pr.rating) AS rating
@@ -52,6 +62,7 @@ const GET_BY_CATEGORY = async (req, res) => {
             });
         }
     } catch (err) {
+        console.error(err);
         return res.status(500).json({
             success: false,
             data: null,
