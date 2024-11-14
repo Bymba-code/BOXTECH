@@ -6,13 +6,14 @@ const GET_BY_CATEGORY = async (req, res) => {
 
         // Pagination parameters
         const page = parseInt(req.query.page) || 1;  // Default to page 1
+        const limit = 10;  // Fixed limit (always 10)
         const offset = (page - 1) * limit;  // Calculate the offset
 
-        // Ensure limit and offset are valid integers
-        if (isNaN(limit) || isNaN(offset)) {
+        // Ensure page is a valid integer
+        if (isNaN(page) || page <= 0) {
             return res.status(400).json({
                 success: false,
-                message: "Invalid pagination parameters"
+                message: "Invalid page number"
             });
         }
 
@@ -21,16 +22,16 @@ const GET_BY_CATEGORY = async (req, res) => {
         // Query to get the products for the specific category with pagination
         const query = `
         SELECT p.id, p.product_name, p.price, p.category_name, AVG(pr.rating) AS rating
-FROM products p
-LEFT JOIN product_rating pr ON p.id = pr.product_id
-WHERE p.category_name = ?
-GROUP BY p.id, p.product_name, p.price, p.category_name
-ORDER BY p.product_name
-LIMIT 10 OFFSET ?
+        FROM products p
+        LEFT JOIN product_rating pr ON p.id = pr.product_id
+        WHERE p.category_name = ?
+        GROUP BY p.id, p.product_name, p.price, p.category_name
+        ORDER BY p.product_name
+        LIMIT ? OFFSET ?
         `;
         
         // Get the paginated products
-        const data = await executeQuery(query, [categoryName,offset]);
+        const data = await executeQuery(query, [categoryName, limit, offset]);
 
         // Query to count total number of items (products) in the category
         const countQuery = "SELECT COUNT(*) AS total FROM products WHERE category_name = ?";
