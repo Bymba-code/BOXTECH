@@ -11,6 +11,7 @@ const GET_BY_CATEGORY = async (req, res) => {
 
         const countQuery = `SELECT COUNT(*) AS totalCount FROM products p WHERE p.category_name = ?`;
         const countResult = await executeQuery(countQuery, [categoryName]);
+        const totalCount = countResult[0].totalCount;
 
 
         // Construct the query
