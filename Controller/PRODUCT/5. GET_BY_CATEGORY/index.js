@@ -36,7 +36,7 @@ const GET_BY_CATEGORY = async (req, res) => {
         return res.status(500).json({
             success: false,
             data: null,
-            message: "Серверийн алдаа,
+            message: "Серверийн алдаа",
             error: err.message || err
         });
     }
