@@ -22,12 +22,12 @@ const GET_BY_CATEGORY = async (req, res) => {
         // Query to get the products for the specific category with pagination
         const query = `
         SELECT p.id, p.product_name, p.price, p.category_name, AVG(pr.rating) AS rating
-    FROM products p
-    LEFT JOIN product_rating pr ON p.id = pr.product_id
-    WHERE p.category_name = 'Програм хангамж'
-    GROUP BY p.id, p.product_name, p.price, p.category_name
-    ORDER BY p.product_name
-    LIMIT ? OFFSET ?
+FROM products p
+LEFT JOIN product_rating pr ON p.id = pr.product_id
+WHERE p.category_name = ?
+GROUP BY p.id, p.product_name, p.price, p.category_name
+ORDER BY p.product_name
+LIMIT 10 OFFSET ?
         `;
         
         // Get the paginated products
