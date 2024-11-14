@@ -33,6 +33,7 @@ const GET_BY_CATEGORY = async (req, res) => {
                 success: true,
                 data: data,
                 totalCount: totalCount,
+                maxPages: maxPages,
                 message: "Амжилттай" // Success
             });
         }
