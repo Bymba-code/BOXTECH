@@ -12,7 +12,7 @@ const GET_BY_CATEGORY = async (req, res) => {
         const query = `
             SELECT * from products limit ? offset ?
         `;
-        const data = await executeQuery(query , [limit , offset])
+        const data = await executeQuery(query , [+limit , +offset])
             if (data.length === 0) {
             return res.status(404).json({
                 success: false,
