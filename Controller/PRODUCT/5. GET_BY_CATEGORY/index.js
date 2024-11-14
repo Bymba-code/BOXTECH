@@ -6,7 +6,6 @@ const GET_BY_CATEGORY = async (req, res) => {
 
         // Pagination parameters
         const page = parseInt(req.query.page) || 1;  // Default to page 1
-        const limit = parseInt(req.query.limit) || 10;  // Default to 10 items per page
         const offset = (page - 1) * limit;  // Calculate the offset
 
         // Ensure limit and offset are valid integers
@@ -31,7 +30,7 @@ LIMIT 10 OFFSET ?
         `;
         
         // Get the paginated products
-        const data = await executeQuery(query, [categoryName, limit, offset]);
+        const data = await executeQuery(query, [categoryName,offset]);
 
         // Query to count total number of items (products) in the category
         const countQuery = "SELECT COUNT(*) AS total FROM products WHERE category_name = ?";
