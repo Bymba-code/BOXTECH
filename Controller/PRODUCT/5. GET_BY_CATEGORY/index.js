@@ -6,8 +6,8 @@ const GET_BY_CATEGORY = async (req, res) => {
         let { page, limit } = req.query;
 
         // Set default values for page and limit if not provided or invalid
-        page = parseInt(page) || 1;  // Default to page 1 if not provided or invalid
-        limit = parseInt(limit) || 10;  // Default to limit 10 if not provided or invalid
+        page = page || 1;  // Default to page 1 if not provided or invalid
+        limit = limit || 10;  // Default to limit 10 if not provided or invalid
 
 
         // Construct the query
