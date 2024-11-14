@@ -9,14 +9,12 @@ const GET_BY_CATEGORY = async (req, res) => {
         page = parseInt(page) || 1;  // Default to page 1 if not provided or invalid
         limit = parseInt(limit) || 10;  // Default to limit 10 if not provided or invalid
 
-        // Calculate the offset based on the current page
-        const offset = (page - 1) * limit;
 
         // Construct the query
         const query = `SELECT p.id, p.product_name, p.price, p.category_name, AVG(pr.rating) AS rating FROM products p LEFT JOIN product_rating pr ON p.id = pr.product_id WHERE p.category_name = ? GROUP BY p.id, p.product_name, p.price, p.category_name ORDER BY p.product_name LIMIT ? OFFSET ?`;
 
         // Execute the query with the category name, limit, and offset
-        const data = await executeQuery(query, [categoryName, limit, offset]);
+        const data = await executeQuery(query, [categoryName, limit, page]);
 
         if (data.length === 0) {
             return res.status(404).json({
