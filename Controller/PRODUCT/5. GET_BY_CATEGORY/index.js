@@ -5,11 +5,10 @@ const GET_BY_CATEGORY = async (req, res) => {
         const { categoryName } = req.params;
         let { page, limit } = req.query;
 
-        // Set default values for page and limit if not provided or invalid
-        page = page || 1; 
-        limit = limit || 10;  
+        page = parseInt(page, 10) || 1;  
+        limit = parseInt(limit, 10) || 10; 
 
-        const offset = ( page - 1 ) * parseInt(limit)
+        const offset = ( page - 1 ) * limit
 
         const countQuery = `SELECT COUNT(*) AS totalCount FROM products p WHERE p.category_name = ?`;
         const countResult = await executeQuery(countQuery, [categoryName]);
