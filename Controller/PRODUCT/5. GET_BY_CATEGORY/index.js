@@ -27,7 +27,7 @@ const GET_BY_CATEGORY = async (req, res) => {
     WHERE p.category_name = 'Програм хангамж'
     GROUP BY p.id, p.product_name, p.price, p.category_name
     ORDER BY p.product_name
-    LIMIT 10 OFFSET ?
+    LIMIT ? OFFSET ?
         `;
         
         // Get the paginated products
