@@ -13,7 +13,9 @@ const GET_BY_CATEGORY = async (req, res) => {
         const countResult = await executeQuery(countQuery, [categoryName]);
         const totalCount = countResult[0].totalCount;
 
+        const maxPages = Math.ceil(totalCount / limit);
 
+        
         // Construct the query
         const query = "SELECT p.id, p.product_name, p.price, p.category_name, AVG(pr.rating) AS rating FROM products p LEFT JOIN product_rating pr ON p.id = pr.product_id WHERE p.category_name = ? GROUP BY p.id, p.product_name, p.price, p.category_name ORDER BY p.product_name LIMIT ? OFFSET ?"
 
