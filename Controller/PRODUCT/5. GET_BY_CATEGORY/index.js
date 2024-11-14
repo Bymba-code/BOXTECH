@@ -30,6 +30,7 @@ const GET_BY_CATEGORY = async (req, res) => {
             return res.status(200).json({
                 success: true,
                 data: data,
+                totalCount: totalCount,
                 message: "Амжилттай" // Success
             });
         }
