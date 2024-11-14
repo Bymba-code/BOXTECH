@@ -27,11 +27,11 @@ const GET_BY_CATEGORY = async (req, res) => {
         WHERE p.category_name = ?
         GROUP BY p.id, p.product_name, p.price, p.category_name
         ORDER BY p.product_name
-        LIMIT ? OFFSET ?
+        LIMIT 10 OFFSET ?
         `;
         
         // Get the paginated products
-        const data = await executeQuery(query, [categoryName, limit, offset]);
+        const data = await executeQuery(query, [categoryName,offset]);
 
         // Query to count total number of items (products) in the category
         const countQuery = "SELECT COUNT(*) AS total FROM products WHERE category_name = ?";
