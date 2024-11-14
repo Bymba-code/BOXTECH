@@ -3,7 +3,7 @@ const { executeQuery } = require("../../../DATABASE");
 const GET_BY_CATEGORY = async (req, res) => {
     try {
         const { categoryName } = req.params;
-        const { page = 1, pageSize = 10 } = req.query; // Get page and pageSize from query params
+        const { page = 2, pageSize = 10 } = req.query; // Get page and pageSize from query params
 
         const offset = (page - 1) * pageSize;
 
