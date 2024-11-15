@@ -41,6 +41,8 @@ const POST_CREATE_PRODUCT = async (req, res) => {
 
             const imagePath = req.file ? `/uploads/${req.file.filename}` : null;
 
+            console.log(imagePath)
+
             const values = [
                 username,
                 productName,
