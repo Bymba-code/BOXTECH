@@ -3,10 +3,26 @@ const {executeQuery} = require("../../../DATABASE/index")
 const POST_CREATE_PRODUCT = async(req, res) => {
     try 
     {
-        const {username, product_name, short_desc, description, price, link} = req.body;
+        const {
+            username, 
+            productName,
+            shortDesc,
+            desc,
+            price,
+            link,
+            categoryName,
+            image
+            } = req.body;
 
         const values = [
-            username, product_name, short_desc, description, price, link
+            username, 
+            productName,
+            shortDesc,
+            desc,
+            price,
+            link,
+            categoryName,
+            image
         ]
         
         if(!username)
@@ -14,10 +30,10 @@ const POST_CREATE_PRODUCT = async(req, res) => {
             return res.status(403).json({
                 success:false, 
                 data: null,
-                message: "Нэвтэрнэ үү."
+                message: "Нэвтэрнэ үү"
             })
         }
-        if(!product_name)
+        if(!productName)
         {
             return res.status(403).json({
                 success:false, 
@@ -25,7 +41,7 @@ const POST_CREATE_PRODUCT = async(req, res) => {
                 message: "Өөрийн файлын нэрийг оруулна уу."
             })
         }
-        if(!short_desc)
+        if(!shortDesc)
         {
             return res.status(403).json({
                 success:false, 
@@ -33,7 +49,7 @@ const POST_CREATE_PRODUCT = async(req, res) => {
                 message: "Богино тайлбарыг оруулна уу."
             })
         }
-        if(!description)
+        if(!desc)
         {
             return res.status(403).json({
                 success:false, 
@@ -57,8 +73,16 @@ const POST_CREATE_PRODUCT = async(req, res) => {
                 message: "Файлын татах линкийг оруулна уу."
             })
         }
+        if(!categoryName)
+        {
+            return res.status(403).json({
+                success:false, 
+                data: null,
+                message: "Файлын төрлийг сонгоно уу"
+            })
+        }
 
-        const query = "INSERT INTO products (`username`, `product_name`, `short_desc`, `description`, `price`, `link`) VALUES (?, ?, ? ,? ,? ,?)"
+        const query = "INSERT INTO products (`username`, `product_name`, `short_desc`, `description`, `price`, `link`, `imgUrl`) VALUES (?, ?, ? ,? ,? ,?, ?)"
 
         const data = await executeQuery(query, values)
 
