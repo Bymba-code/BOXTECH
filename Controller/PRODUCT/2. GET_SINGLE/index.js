@@ -4,7 +4,7 @@ const GET_SINGLE_PRODUCT = async (req, res) => {
     try {
         const { id } = req.params;
 
-        const query = `SELECT p.id, p.product_name, p.price, p.category_name, 
+        const query = `SELECT p.*,
                               AVG(pr.rating) AS rating 
                        FROM products p 
                        LEFT JOIN product_rating pr ON p.id = pr.product_id 
