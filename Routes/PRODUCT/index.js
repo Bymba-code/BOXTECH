@@ -11,7 +11,7 @@ router.route("/product")
 .get(GET_ALL_PRODUCT)
 .post(POST_CREATE_PRODUCT)
 
-router.route("/product/:name")
+router.route("/product/:id")
 .get(GET_SINGLE_PRODUCT)
 
 router.route("/product/category/:categoryName")
