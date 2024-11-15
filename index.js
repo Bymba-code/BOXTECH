@@ -5,6 +5,8 @@ const userRoutes = require("./Routes/USER/index")
 const authRoutes = require("./Routes/AUTH/index")
 const categoryRoutes = require("./Routes/CATEGORY")
 const productRoutes = require("./Routes/PRODUCT/index")
+const path = require("path");
+
 
 const corsOptions = {
     origin: "*",
@@ -17,6 +19,7 @@ const corsOptions = {
 
 const app = express()
 
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use(express.json())
 app.use(cors(corsOptions));
 
