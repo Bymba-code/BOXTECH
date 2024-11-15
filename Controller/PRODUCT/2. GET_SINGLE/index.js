@@ -1,6 +1,6 @@
 const { executeQuery } = require("../../../DATABASE");
 
-const GET_BY_CATEGORY = async (req, res) => {
+const GET_SINGLE_PRODUCT = async (req, res) => {
     try {
 
         const {id} = req.params;
@@ -39,4 +39,4 @@ const GET_BY_CATEGORY = async (req, res) => {
     }
 };
 
-module.exports = GET_BY_CATEGORY;
+module.exports = GET_SINGLE_PRODUCT;
