@@ -1,0 +1,7 @@
+const express = require("express")
+
+const router = express.Router()
+
+router.route("/category").get((req, res) => { return res.status(200).json("Sdssd")})
+
+module.exports = router
