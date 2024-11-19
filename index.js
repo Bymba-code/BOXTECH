@@ -1,4 +1,5 @@
 const express = require("express");
+const cors = require("cors");
 const {testDatabaseConnection} = require("./DATABASE/index") 
 
 const productRoutes = require("./Routes/Product/index");
