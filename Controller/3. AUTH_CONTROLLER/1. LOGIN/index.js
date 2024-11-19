@@ -26,7 +26,7 @@ const AUTH_LOGIN = async (req, res) => {
         const checkQuery = 'SELECT * FROM users WHERE username = ?';
         const  checkData  = await executeQuery(checkQuery, [username]);
 
-        if (checkData === 0) {
+        if (checkData.length === 0) {
             return res.status(404).json({
                 success: false,
                 message: "Хэрэглэгч олдсонгүй"
