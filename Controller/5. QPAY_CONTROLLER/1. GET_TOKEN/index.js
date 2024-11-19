@@ -1,5 +1,6 @@
 const axios = require('axios');
-
+const CLIENT_ID = "BOXTECH_MN";
+const CLIENT_SECRET = "WBDUzy8n";
 const {executeQuery} = require("../../../DATABASE")
 
 const getToken = async (req, res) => {
