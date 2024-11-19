@@ -9,7 +9,7 @@ const commentRouter = require("./Routes/Comments")
 const app = express();
 
 app.use(express.json());
-
+app.use(cors());
 
 app.use("/api/v1/auth/v1",authRoutes)
 
