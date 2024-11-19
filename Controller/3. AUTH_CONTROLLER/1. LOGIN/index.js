@@ -55,7 +55,6 @@ const AUTH_LOGIN = async (req, res) => {
         res.cookie('BOXTECH_TOKEN', token , {
             httpOnly: false,
             secure: false,
-            sameSite: "Strict",
             maxAge: 3600000
         })
 
