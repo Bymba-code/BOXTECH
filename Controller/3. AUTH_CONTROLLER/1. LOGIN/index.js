@@ -52,12 +52,12 @@ const AUTH_LOGIN = async (req, res) => {
             {expiresIn: '2h'}
         )
 
-          res.cookie('BOXTECH_TOKEN', token , {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: "Strict",
-            maxAge: 3600000
-        })
+          res.cookie('BOXTECH_TOKEN', token, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === 'production', // Only secure in production
+          sameSite: 'Strict',
+          maxAge: 3600000 // 1 hour
+        });
 
 
         return res.status(200).json({
