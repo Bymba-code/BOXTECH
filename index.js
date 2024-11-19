@@ -1,6 +1,7 @@
 const express = require("express");
 const {testDatabaseConnection} = require("./DATABASE/index") 
 const cors = require("cors")
+const path = require("path")
 
 const productRoutes = require("./Routes/Product/index");
 const categoryRoutes = require("./Routes/Category")
@@ -13,11 +14,15 @@ const cookieParser = require("cookie-parser");
 
 const app = express();
 
+
+
 app.use(express.json());
 app.use(cors({
     origin: "http://localhost:3000",
     credentials: true
 }))
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 app.use(cookieParser())
 
 app.use("/api/v1/auth/v1",authRoutes)
@@ -38,6 +43,6 @@ app.use("/api/v1" , checkController)
 testDatabaseConnection()
 
 
-app.listen(3000, () => {
-    console.log("App listening on port 3000");
+app.listen(8000, () => {
+    console.log("App listening on port 8000");
 });
