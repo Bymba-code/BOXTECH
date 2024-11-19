@@ -1,28 +1,30 @@
-const jwt = require('jsonwebtoken');
-const dotenv = require('dotenv');
-
-dotenv.config(); 
+const jwt = require("jsonwebtoken");
+const dotenv = require("dotenv");
+dotenv.config();
 
 const authenticateToken = (req, res, next) => {
-    const token = req.header('Authorization')?.split(' ')[1];  
+    let token;
+    if(req.cookies && req.cookies.BOXTECH_TOKEN)
+    {
+        token = req.cookies.BOXTECH_TOKEN; 
+    }
 
     if (!token) {
-        return res.status(401).json({
+        return res.status(403).json({
             success: false,
-            message: 'Токен байхгүй эсвэл хугацаа дууссан байна.'
+            message: "Токен олдсонгүй"  
         });
     }
 
-    jwt.verify(token, process.env.TOKEN_SECURE, (err, decoded) => {
+    jwt.verify(token, process.env.TOKEN_SECURE, (err, user) => {
         if (err) {
             return res.status(403).json({
                 success: false,
-                message: 'Буруу токен'
+                message: "Токен буруу байна"
             });
         }
-
-        req.user = decoded; 
-        next(); 
+        req.user = user; 
+        next();  
     });
 };
 

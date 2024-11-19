@@ -47,7 +47,7 @@ const AUTH_LOGIN = async (req, res) => {
 
 
         const token = jwt.sign(
-            {id:user.id , username: user.username},
+            {id:user.id , username: user.username, role: user.role },
             process.env.TOKEN_SECURE,
             {expiresIn: '2h'}
         )
@@ -62,7 +62,7 @@ const AUTH_LOGIN = async (req, res) => {
 
         return res.status(200).json({
             success: true,
-            data: { id: user.id, username: user.username }, 
+            data: { id: user.id, username: user.username, role: user.role }, 
             message: "Амжилттай нэвтэрлээ."
         });
 
