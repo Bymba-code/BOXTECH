@@ -64,10 +64,15 @@ const checkInvoice = async (req, res) => {
 
 
         if (data && data.paid_amount) {
-          const selectInvoice = 'SELECT * FROM qpay_invoice WHERE invoice_id = ?'
-          const invoiceData = await executeQuery(selectInvoice, [invoice.invoice_id])
+            const selectInvoice = `
+                            SELECT * FROM qpay_invoice 
+                            LEFT JOIN checkouts ON qpay_invoice.checkout_id = checkouts.id
+                            WHERE invoice_id = ?`
+          
+                            const invoiceData = await executeQuery(selectInvoice, [invoice.invoice_id])
 
-        
+          console.log(invoiceData[0])
+
           if(invoiceData[0].payment === 1)
           {
             return res.status(400).json({
@@ -75,19 +80,49 @@ const checkInvoice = async (req, res) => {
               message: "Нэхэмжлэл төлөгдсөн байна"
             })
           }
-          
+
           const updateQuery = `UPDATE qpay_invoice SET payment = 1 WHERE invoice_id = ?`;
           await executeQuery(updateQuery, [invoice.invoice_id])
 
-          const insertProductUser = "INSERT INTO user_product (`user`,`product`,`date`) VALUES (?, ? , ?)"
-          
-          const isInserted = await executeQuery(insertProductUser, [userId, product, new Date() ])
+          if(invoiceData[0].type === "product")
+          {
+            const insertProductUser = "INSERT INTO user_product (`user`,`product`,`date`) VALUES (?, ?, ?)"
+            const isInserted = await executeQuery(insertProductUser, [userId, product, new Date() ])
+
+            if(isInserted.affectedRows > 0)
+            {
+                return res.status(200).json({
+                    success: true,
+                    message: "Амжилттай төлөгдлөө"
+                });
+            }
+          }
+        
+            if(invoiceData[0].type === "subscription")
+            {
+                const today = new Date()
+
+                const nextMonth = new Date(today)
+                nextMonth.setMonth(nextMonth.getMonth() + 1)
+
+                const query = "UPDATE user_subscription SET start_date = ?, end_date = ? WHERE user = ?" 
+                
+                const isUpdate = await executeQuery(query, [today, nextMonth , userId])
+
+                if(isUpdate.affectedRows > 0)
+                {
+                    return res.status(200).json({
+                        success: true,
+                        message: "Сунгалт амжилттай хийгдлээ"
+                    });
+                }
+            }
+
+
 
           
-          return res.status(200).json({
-                success: true,
-                message: "Амжилттай төлөгдлөө"
-          });
+
+        
           
 
         } else {
