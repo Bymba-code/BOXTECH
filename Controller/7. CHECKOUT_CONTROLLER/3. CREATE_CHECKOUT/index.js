@@ -17,11 +17,16 @@ const CREATE_CHECKOUT = async (req, res) => {
 
        const insertData = await executeQuery(insertQuery, values)
 
+
+       const checkout = "SELECT * FROM checkouts WHERE id =?"
+
+       const check = await executeQuery(checkout, [insertData.insertId])
+
        if(insertData.affectedRows > 0)
        {
         return res.status(200).json({
             success:true,
-            data:insertData,
+            data:check,
             message: "Амжилттай үүслээ"
         })
        }
