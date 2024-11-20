@@ -17,6 +17,7 @@ const GET_ALL_BY_CATEGORY_PRODUCT = async (req, res) => {
                 p.desc,
                 p.price,
                 p.img_url,
+                p.link,
                 p.create_date,
                 IFNULL(AVG(r.rating), 0) AS rating,
                 u.username,
