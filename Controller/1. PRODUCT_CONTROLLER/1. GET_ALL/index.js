@@ -17,6 +17,7 @@ const GET_ALL_PRODUCT = async (req, res) => {
                 p.price,
                 p.img_url,
                 p.create_date,
+                p.link,
                 IFNULL(AVG(r.rating), 0) AS rating,
                 u.username,
                 u.profile_img,
