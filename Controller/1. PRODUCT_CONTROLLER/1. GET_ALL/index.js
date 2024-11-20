@@ -10,7 +10,7 @@ const GET_ALL_PRODUCT = async (req, res) => {
         const query = `
             SELECT 
                 p.id,
-                c.name,
+                c.name AS category_name,
                 p.product_name,
                 p.short_desc,
                 p.desc,
