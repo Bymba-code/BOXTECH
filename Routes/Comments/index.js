@@ -9,8 +9,8 @@ const router = express.Router()
 
 router.route("/comment")
 .get(GET_ALL_COMMENT)
-.post(authenticateToken, POST_CREATE_COMMENT)
-.delete(authenticateToken, DELETE_COMMENT)
+.post(POST_CREATE_COMMENT)
+.delete(DELETE_COMMENT)
 
 router.route("/comment/:product")
 .get(GET_COMMENT_BY_PRODUCT)
