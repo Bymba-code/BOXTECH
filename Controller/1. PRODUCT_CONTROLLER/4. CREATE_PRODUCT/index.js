@@ -32,6 +32,15 @@ const POST_CREATE_PRODUCT = async (req, res) => {
     try {
       const { user, productName, shortDesc, desc, price, category, link} = req.body;
 
+      if(!user)
+      {
+        return res.status(401).json({
+          success:false,
+          data:null,
+          message: "Файл байршуулахын тулд нэвтэрнэүү "
+        })
+      }
+
       if (!productName) {
         return res.status(403).json({
           success: false,
@@ -60,6 +69,22 @@ const POST_CREATE_PRODUCT = async (req, res) => {
           message: "Файлын зарагдах үнэ -ийг оруулна уу."
         });
       }
+      if(!category)
+      {
+        return res.status(403).json({
+          success:false,
+          data:null,
+          message: "Файлын төрлийг сонгоно уу"
+        })
+      }
+      if(!link)
+      {
+        return res.status(403).json({
+          success:false,
+          data:null,
+          message: "Файлын татагдах линкийг оруулна уу"
+        })
+      }
 
       const categoryCheckQuery = "SELECT id FROM categories WHERE id = ?";
       const categoryData = await executeQuery(categoryCheckQuery, [2]);
@@ -73,6 +98,15 @@ const POST_CREATE_PRODUCT = async (req, res) => {
       }
 
       const imageUrl = req.file ? req.file.path : null;
+
+      if(!imageUrl)
+      {
+        return res.status(403).json({
+          success:false, 
+          data:null,
+          message: "Файлын зургыг оруулна уу"
+        })
+      }
 
       const values = [
        user,  productName, shortDesc, desc, price, imageUrl, new Date(), category, link
