@@ -14,7 +14,6 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 const POST_CREATE_PRODUCT = async (req, res) => {
-  // Process the file upload
   upload.single('image')(req, res, async (err) => {
     if (err) {
       let errorMessage = '';
@@ -31,40 +30,37 @@ const POST_CREATE_PRODUCT = async (req, res) => {
     }
 
     try {
-      // Extracting product details from req.body (text fields)
-      const { user, product_name, short_desc, description, price, category} = req.body;
+      const { user, productName, shortDesc, desc, price, category, link} = req.body;
 
-      // Check if all required fields are provided
-    //   if (!product_name) {
-    //     return res.status(403).json({
-    //       success: false,
-    //       data: null,
-    //       message: "Өөрийн файлын нэрийг оруулна уу."
-    //     });
-    //   }
-    //   if (!short_desc) {
-    //     return res.status(403).json({
-    //       success: false,
-    //       data: null,
-    //       message: "Богино тайлбарыг оруулна уу."
-    //     });
-    //   }
-    //   if (!description) {
-    //     return res.status(403).json({
-    //       success: false,
-    //       data: null,
-    //       message: "Файлын тайлбарыг оруулна уу."
-    //     });
-    //   }
-    //   if (!price) {
-    //     return res.status(403).json({
-    //       success: false,
-    //       data: null,
-    //       message: "Файлын зарагдах үнэ -ийг оруулна уу."
-    //     });
-    //   }
+      if (!productName) {
+        return res.status(403).json({
+          success: false,
+          data: null,
+          message: "Өөрийн файлын нэрийг оруулна уу."
+        });
+      }
+      if (!shortDesc) {
+        return res.status(403).json({
+          success: false,
+          data: null,
+          message: "Богино тайлбарыг оруулна уу."
+        });
+      }
+      if (!desc) {
+        return res.status(403).json({
+          success: false,
+          data: null,
+          message: "Файлын тайлбарыг оруулна уу."
+        });
+      }
+      if (!price) {
+        return res.status(403).json({
+          success: false,
+          data: null,
+          message: "Файлын зарагдах үнэ -ийг оруулна уу."
+        });
+      }
 
-      // Check if the provided category exists in the database
       const categoryCheckQuery = "SELECT id FROM categories WHERE id = ?";
       const categoryData = await executeQuery(categoryCheckQuery, [2]);
 
@@ -76,15 +72,13 @@ const POST_CREATE_PRODUCT = async (req, res) => {
         });
       }
 
-      // Get the uploaded image URL from req.file
       const imageUrl = req.file ? req.file.path : null;
 
-      // Insert the product data into the database
       const values = [
-        2, "Sdfsdfsf", "sdfsdfsdf", "sdsdsds", 23, imageUrl, new Date(), 2
+       user,  productName, shortDesc, desc, price, imageUrl, new Date(), category, link
       ];
 
-      const query = "INSERT INTO products (`user`, `product_name`, `short_desc`, `desc`, `price`, `img_url`, `create_date`, `category`) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+      const query = "INSERT INTO products (`user`, `product_name`, `short_desc`, `desc`, `price`, `img_url`, `create_date`, `category`, `link`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
       const data = await executeQuery(query, values);
 
       if (data) {
