@@ -69,17 +69,26 @@ const AUTH_REGISTER = async (req, res) => {
             new Date()
         ]
         
+
+        
+
         const query = "INSERT INTO users (`username`, `email`, `password`, `profile_img`, `role`, `create_date`) VALUES (?, ?, ?, ?, ? , ?)";
 
         const data = await executeQuery(query, values)
 
         if(data)
             {
-                return res.status(200).json( {
-                    success: true,
-                    data: data,
-                    message: "Бүртгэл амжилттай үүслээ."
-                })
+                const installSubs = "INSERT INTO user_subscription (`user`,`start_date`,`end_date`) VALUES (? , ? , ?)"
+                const isUpdate = await executeQuery(installSubs, [data.insertId, new Date(), new Date()])
+
+                if(isUpdate.affectedRows > 0)
+                {
+                    return res.status(200).json( {
+                        success: true,
+                        data: data,
+                        message: "Бүртгэл амжилттай үүслээ."
+                    })
+                }
             }
 
         
