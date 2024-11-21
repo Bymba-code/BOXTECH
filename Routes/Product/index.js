@@ -4,6 +4,7 @@ const GET_ALL_BY_CATEGORY_PRODUCT = require("../../Controller/1. PRODUCT_CONTROL
 const GET_SINGLE_PRODUCT = require("../../Controller/1. PRODUCT_CONTROLLER/3. GET_SINGLE")
 const POST_CREATE_PRODUCT = require("../../Controller/1. PRODUCT_CONTROLLER/4. CREATE_PRODUCT")
 const GET_USER_PRODUCT = require("../../Controller/8. USER_PRODUCT_CONTROLLER/1. GET_ALL")
+const INSERT_REVIEW_PRODUCT = require("../../Controller/1. PRODUCT_CONTROLLER/5. INSERT_REVIEW")
 
 const router = express.Router()
 
@@ -16,4 +17,5 @@ router.route("/product/single/:id").get(GET_SINGLE_PRODUCT)
 
 router.route("/product/user/:id").get(GET_USER_PRODUCT)
 
+router.route("/product/review").post(INSERT_REVIEW_PRODUCT)
 module.exports = router
