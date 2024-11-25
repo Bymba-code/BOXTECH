@@ -3,7 +3,7 @@ const axios = require('axios');
 require('dotenv').config();
 
 const checkInvoice = async (req, res) => {
-    const { id } = req.params;
+    const {id} = req.params;
     const {userId, product} = req.body;
 
     if(!id)
@@ -65,13 +65,29 @@ const checkInvoice = async (req, res) => {
 
         if (data && data.paid_amount) {
             const selectInvoice = `
-                            SELECT * FROM qpay_invoice 
-                            LEFT JOIN checkouts ON qpay_invoice.checkout_id = checkouts.id
-                            WHERE invoice_id = ?`
-          
-                            const invoiceData = await executeQuery(selectInvoice, [invoice.invoice_id])
+                            SELECT 
+                            checkouts.id,
+                            checkouts.checkout_code,
+                            checkouts.type,
+                            checkouts.user,
+                            checkouts.product,
+                            qpay_invoice.invoice_id,
+                            qpay_invoice.amount,
+                            qpay_invoice.payment,
+                            user_bank.account
+                            FROM checkouts
+                            LEFT JOIN qpay_invoice ON qpay_invoice.checkout_id = checkouts.id
+                            LEFT JOIN products ON products.id = checkouts.product
+                            LEFT JOIN user_bank ON products.user = user_bank.user
+                            WHERE invoice_id = ?
 
-          console.log(invoiceData[0])
+
+                            `
+            const invoiceData = await executeQuery(selectInvoice, [invoice.invoice_id])
+
+
+            const uldeh = parseInt(invoiceData[0].amount) * 0.30;
+            const shiljvvleh = parseInt(invoiceData[0].amount * 0.70)
 
           if(invoiceData[0].payment === 1)
           {
@@ -89,6 +105,9 @@ const checkInvoice = async (req, res) => {
             const insertProductUser = "INSERT INTO user_product (`user`,`product`,`date`) VALUES (?, ?, ?)"
             const isInserted = await executeQuery(insertProductUser, [userId, product, new Date() ])
 
+
+     
+
             if(isInserted.affectedRows > 0)
             {
                 return res.status(200).json({
@@ -96,6 +115,9 @@ const checkInvoice = async (req, res) => {
                     message: "Амжилттай төлөгдлөө"
                 });
             }
+
+
+
           }
         
             if(invoiceData[0].type === "subscription")
