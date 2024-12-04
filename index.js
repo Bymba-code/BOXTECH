@@ -45,6 +45,6 @@ app.use("/api/v1", adminRoutes)
 testDatabaseConnection()
 
 
-app.listen(8000, () => {
+app.listen(3000, () => {
     console.log("App listening on port 8000");
 });
