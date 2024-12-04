@@ -10,7 +10,6 @@ const commentRouter = require("./Routes/Comments")
 const qpayRoutes = require("./Routes/QPAY")
 const subController = require("./Routes/Subscription");
 const checkController = require("./Routes/Checkout")
-const gateController = require("./Routes/GATEWAY/index")
 const cookieParser = require("cookie-parser");
 const adminRoutes = require("./Routes/Admin")
 
@@ -40,9 +39,6 @@ app.use("/api/v1", qpayRoutes)
 app.use("/api/v1", subController)
 
 app.use("/api/v1" , checkController)
-
-app.use("/api/v1" , gateController)
-
 app.use("/api/v1", adminRoutes)
 
 
