@@ -10,7 +10,9 @@ const commentRouter = require("./Routes/Comments")
 const qpayRoutes = require("./Routes/QPAY")
 const subController = require("./Routes/Subscription");
 const checkController = require("./Routes/Checkout")
+const gateController = require("./Routes/GATEWAY/index")
 const cookieParser = require("cookie-parser");
+const adminRoutes = require("./Routes/Admin")
 
 const app = express();
 
@@ -18,9 +20,9 @@ const app = express();
 
 app.use(express.json());
 app.use(cors({
-    origin: ["http://localhost:3000", "https://omn1club.com"],
+    origin: "http://localhost:3000",
     credentials: true
-}));
+}))
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 app.use(cookieParser())
@@ -39,10 +41,14 @@ app.use("/api/v1", subController)
 
 app.use("/api/v1" , checkController)
 
+app.use("/api/v1" , gateController)
+
+app.use("/api/v1", adminRoutes)
+
 
 testDatabaseConnection()
 
 
-app.listen(3000, () => {
-    console.log("App listening on port 3000");
+app.listen(8000, () => {
+    console.log("App listening on port 8000");
 });
