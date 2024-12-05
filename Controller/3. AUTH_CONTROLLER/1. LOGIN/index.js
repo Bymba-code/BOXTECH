@@ -52,18 +52,17 @@ const AUTH_LOGIN = async (req, res) => {
             {expiresIn: '2h'}
         )
 
-          res.cookie('BOXTECH_TOKEN', token, {
-          httpOnly: true,
-          secure: process.env.NODE_ENV === 'production', // Only secure in production
-          sameSite: true,
-          secret: "Sdfsafsfa",
-          maxAge: 3600000 // 1 hour
-        });
+        res.cookie('BOXTECH_TOKEN', token , {
+            httpOnly: false,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "Strict",
+            maxAge: 3600000
+        })
 
 
         return res.status(200).json({
             success: true,
-            data: { id: user.id, username: user.username, role: user.role }, 
+            data: { id: user.id, username: user.username, role: user.role , token: token}, 
             message: "Амжилттай нэвтэрлээ."
         });
 
