@@ -17,9 +17,9 @@ const UPDATE_CATEGORY = async (req, res) => {
                 message: "Таны хайсан ангилал устсан эсвэл байхгүй байна"
             })
         }
-        const updateQuery = "UPDATE categories SET name = ?"
+        const updateQuery = "UPDATE categories SET name = ? WHERE id = ?"
 
-        const data = await executeQuery(updateQuery, [updateName])
+        const data = await executeQuery(updateQuery, [updateName, id])
 
         if(data.affectedRows > 0)
         {
