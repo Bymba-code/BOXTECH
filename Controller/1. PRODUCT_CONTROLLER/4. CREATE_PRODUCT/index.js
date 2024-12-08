@@ -87,7 +87,7 @@ const POST_CREATE_PRODUCT = async (req, res) => {
       }
 
       const categoryCheckQuery = "SELECT id FROM categories WHERE id = ?";
-      const categoryData = await executeQuery(categoryCheckQuery, [2]);
+      const categoryData = await executeQuery(categoryCheckQuery, [category]);
 
       if (categoryData.length === 0) {
         return res.status(404).json({
