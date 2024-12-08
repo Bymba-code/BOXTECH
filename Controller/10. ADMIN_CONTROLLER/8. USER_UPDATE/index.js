@@ -8,7 +8,8 @@ const UPDATE_USER = async (req, res) => {
 
        const query = "UPDATE users SET password = ? WHERE id = ?"
      
-       const hashedPassword = await bcrypt.hash(password, 10);
+       const salt = await bcrypt.genSaltSync(10)
+       const hashedPassword = await bcrypt.hash(password, salt);
 
 
        const data = await executeQuery(query, [hashedPassword, id])
