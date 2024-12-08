@@ -11,11 +11,11 @@ const UPDATE_USER = require("../../Controller/10. ADMIN_CONTROLLER/8. USER_UPDAT
 
 const router = express.Router()
 
-router.route("/admin/dashboard").get(authenticateToken, authorizeRoles("admin"),DASHBOARD_ADMIN) 
+router.route("/admin/dashboard").get(DASHBOARD_ADMIN) 
 
-router.route("/admin/recent").get(authenticateToken, authorizeRoles("admin"),RECENT_ORDER)
+router.route("/admin/recent").get(RECENT_ORDER)
 
-router.route("/admin/products").get(authenticateToken, authorizeRoles("admin"),PRODUCT_ADMIN)
+router.route("/admin/products").get(PRODUCT_ADMIN)
 
 router.route("/admin/category").get(CATEGORY_ADMIN)
 
