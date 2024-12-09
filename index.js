@@ -12,6 +12,7 @@ const subController = require("./Routes/Subscription");
 const checkController = require("./Routes/Checkout")
 const cookieParser = require("cookie-parser");
 const adminRoutes = require("./Routes/Admin")
+const favouriteRoutes = require("./Routes/Favourites")
 
 const app = express();
 
@@ -40,6 +41,7 @@ app.use("/api/v1", subController)
 
 app.use("/api/v1" , checkController)
 app.use("/api/v1", adminRoutes)
+app.use("/api/v1", favouriteRoutes)
 
 
 testDatabaseConnection()
