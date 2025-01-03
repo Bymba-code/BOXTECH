@@ -48,7 +48,7 @@ const GET_ALL_PRODUCT = async (req, res) => {
                    products.id, users.id, users.username
                  LIMIT ? OFFSET ?`;
 
-    queryParams.push(pageSize, offset.toString());
+    queryParams.push(pageSize.toString(), offset.toString());
 
     const data = await executeQuery(query, queryParams);
 
