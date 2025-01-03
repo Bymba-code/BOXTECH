@@ -4,8 +4,8 @@ const GET_ALL_PRODUCT = async (req, res) => {
   try {
     const { page = 1, limit = 10, category } = req.query;
 
-      const pageNumber = page;
-    const pageSize = limit;
+    const pageNumber = parseInt(page, 10);
+    const pageSize = parseInt(limit, 10);
 
     if (isNaN(pageNumber) || isNaN(pageSize) || pageNumber <= 0 || pageSize <= 0) {
       return res.status(400).json({
@@ -48,7 +48,7 @@ const GET_ALL_PRODUCT = async (req, res) => {
                    products.id, users.id, users.username
                  LIMIT ? OFFSET ?`;
 
-    queryParams.push(pageSize, offset);
+    queryParams.push(pageSize, offset.toString());
 
     const data = await executeQuery(query, queryParams);
 
