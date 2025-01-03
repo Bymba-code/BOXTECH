@@ -4,8 +4,8 @@ const GET_ALL_PRODUCT = async (req, res) => {
   try {
     const { page = 1, limit = 10, category } = req.query;
 
-    const pageNumber = parseInt(page, 10);
-    const pageSize = parseInt(limit, 10);
+      const pageNumber = page;
+    const pageSize = limit;
 
     if (isNaN(pageNumber) || isNaN(pageSize) || pageNumber <= 0 || pageSize <= 0) {
       return res.status(400).json({
