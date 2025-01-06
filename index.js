@@ -13,6 +13,8 @@ const checkoutRoutes = require("./Routes/6. Product Checkout")
 const favouriteRoutes = require("./Routes/7. Favourite")
 const gatewayController = require("./Routes/8. GATEWAY")
 const qpayController = require("./Routes/9. QPAY/")
+const commentController = require("./Routes/10. Product_comment")
+const newsController = require("./Routes/11. News")
 
 const app = express()
 
@@ -40,6 +42,9 @@ app.use(process.env.URL, checkoutRoutes)
 app.use(process.env.URL, favouriteRoutes)
 app.use(process.env.URL, gatewayController)
 app.use(process.env.URL, qpayController)
+app.use(process.env.URL, commentController)
+app.use(process.env.URL, newsController)
+
 
 
 
