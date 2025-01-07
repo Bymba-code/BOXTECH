@@ -1,29 +1,24 @@
 const { executeQuery } = require("../../../Database/test");
 const multer = require("multer");
 
-// Configure the disk storage for multer
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        // Ensure the "uploads" folder exists or create it at runtime
         const fs = require('fs');
         const path = 'uploads/';
         if (!fs.existsSync(path)) {
             fs.mkdirSync(path, { recursive: true });
         }
-        cb(null, path);  // Path where files should be uploaded
+        cb(null, path); 
     },
     filename: (req, file, cb) => {
-        const fileName = `${Date.now()}-${file.originalname}`;  // Give a unique filename
+        const fileName = `${Date.now()}-${file.originalname}`; 
         cb(null, fileName);
     }
 });
 
-// Initialize multer for file uploads
 const upload = multer({ storage: storage });
 
-// The product insertion handler, including file upload
 const INSERT_PRODUCT = async (req, res) => {
-    // Ensure to handle file upload via the 'img' field name in frontend
     upload.single('img')(req, res, async (err) => {  
         if (err) {
             return res.status(500).json({
@@ -34,33 +29,36 @@ const INSERT_PRODUCT = async (req, res) => {
 
         try {
             const { category, file_type, productName, price, short_desc, long_desc, size, link } = req.body;
-            const img = req.file ? req.file.filename : null;  // Retrieve the uploaded image filename
+            const img = req.file ? req.file.filename : null;  
 
-            // Check if the user is authorized to upload
+
+            let domain = link.replace(/^(https?:\/\/)?(www\.)?/, ""); 
+            domain = domain.split("/")[0]; 
+            
+
             if (!req.user || req.user.role === "user") {
                 const checkPermission = "SELECT * FROM user_subscription WHERE user = ?";
                 const permission = await executeQuery(checkPermission, [req.user.id]);
 
-                if (permission.length === 0) {
-                    return res.status(403).json({
-                        success: false,
-                        message: "No subscription data found."
-                    });
-                }
-
-                const userPermission = permission[0];
-                const today = new Date();
-                const endDate = new Date(userPermission.end_date);
-
-                if (today >= endDate) {
-                    return res.status(405).json({
-                        success: false,
-                        message: "Your file upload permission has expired."
-                    });
-                }
+            if (permission.length === 0) {
+                return res.status(403).json({
+                    success: false,
+                    message: "Сунгалтын өгөгдөл олдсонгүй."
+                });
             }
 
-            // Insert product details into the database
+            const userPermission = permission[0];
+            const today = new Date();
+            const endDate = new Date(userPermission.end_date);
+
+            if (today >= endDate) {
+                return res.status(405).json({
+                    success: false,
+                    message: "Таны файл байршуулах эрх дууссан байна."
+                });
+            }
+            }
+
             const values = [
                 req.user.id,
                 category,
@@ -70,8 +68,8 @@ const INSERT_PRODUCT = async (req, res) => {
                 short_desc,
                 long_desc,
                 size,
-                img,  // Store the image filename in the DB
-                link,
+                img,  
+                domain,
                 new Date()
             ];
 
