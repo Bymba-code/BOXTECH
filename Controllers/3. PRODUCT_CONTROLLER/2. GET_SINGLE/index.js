@@ -48,18 +48,6 @@ const GET_SINGLE_PRODUCT = async (req, res) => {
             })
         }
 
-        const insertReviews = "INSERT INTO product_reviews (`product`) VALUES (?)"
-        const reviews = await executeQuery(insertReviews, [data[0].id])
-
-        if(reviews.affectedRows === 0) 
-        {
-            return res.status(404).json({
-                success:false, 
-                data: [],
-                message: "Ямар нэгэн алдаа гарлаа."
-            })
-        }
-
         return res.status(200).json({
             success:true,
             data:data,
