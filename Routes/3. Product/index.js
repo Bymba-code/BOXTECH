@@ -9,18 +9,19 @@ const UPDATE_PRODUCT = require("../../Controllers/3. PRODUCT_CONTROLLER/3. UPDAT
 const DELETE_PRODUCT = require("../../Controllers/3. PRODUCT_CONTROLLER/5. DELETE")
 const GET_USER_PRODUCT = require("../../Controllers/3. PRODUCT_CONTROLLER/6. USER")
 const multer = require("multer");
+const INSERT_REVIEWS = require("../../Controllers/3. PRODUCT_CONTROLLER/7. REVIEWS")
 
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-      cb(null, "uploads/");  // Ensure you have a folder called 'uploads'
+      cb(null, "uploads/");  
     },
     filename: (req, file, cb) => {
       const fileName = `${Date.now()}-${file.originalname}`;
       cb(null, fileName);
     },
   });
-  const upload = multer({ storage: storage }).single("img");  // Handle the single file under the field name 'img'
+  const upload = multer({ storage: storage }).single("img");  
   
 const router = express.Router()
 
@@ -33,5 +34,7 @@ router.route("/product")
 router.route("/product/:productId").get(GET_SINGLE_PRODUCT)
 
 router.route("/user/product").get(Authenticate, Authorize(["user", "admin"]), GET_USER_PRODUCT)
+
+router.route("/reviews/product/:id").get(INSERT_REVIEWS)
 
 module.exports = router
