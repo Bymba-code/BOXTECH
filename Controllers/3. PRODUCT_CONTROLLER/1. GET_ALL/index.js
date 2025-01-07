@@ -35,17 +35,17 @@ const GET_ALL_PRODUCT = async (req, res) => {
                  LEFT JOIN 
                    product_rating ON products.id = product_rating.product`;
 
-    // Add category filtering if category is provided
     const queryParams = [];
     if (category && category !== "all") {
       query += ` WHERE products.category = ?`;
       queryParams.push(category);
     }
 
-    // Add grouping, sorting, and pagination
     query += ` 
                  GROUP BY 
-                   products.id, users.id, users.username
+                   products.id, category.name, users.id, users.username
+                 ORDER BY 
+                   products.date DESC 
                  LIMIT ? OFFSET ?`;
 
     queryParams.push(pageSize.toString(), offset.toString());
@@ -60,7 +60,6 @@ const GET_ALL_PRODUCT = async (req, res) => {
       });
     }
 
-    // Count total products with or without category filter
     let countQuery = `SELECT COUNT(products.id) AS total_products 
                       FROM products`;
 
@@ -73,10 +72,8 @@ const GET_ALL_PRODUCT = async (req, res) => {
     const countResult = await executeQuery(countQuery, countQueryParams);
     const totalProducts = countResult[0]?.total_products || 0;
 
-    // Calculate total pages based on total products and page size
     const totalPages = totalProducts > 0 ? Math.ceil(totalProducts / pageSize) : 1;
 
-    // Debugging to verify the query output
     console.log("Count Query:", countQuery);
     console.log("Count Params:", countQueryParams);
     console.log("Total Products:", totalProducts);
