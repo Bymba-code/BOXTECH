@@ -88,11 +88,20 @@ const INSERT_PRODUCT = async (req, res) => {
                 });
             }
 
-            return res.status(200).json({
-                success: true,
-                data: data,
-                message: "File successfully uploaded and product created."
-            });
+            const insertUserProduct = "INSERT INTO user_products (`user`,`product`,`date`) VALUES (? , ? , ?)"
+            const insertData = await executeQuery(insertUserProduct , [req.user.id, data.insertId, new Date()])
+
+            if(insertData.affectedRows > 0)
+            {
+                return res.status(200).json({
+                    success: true,
+                    data: data,
+                    message: "File successfully uploaded and product created."
+                });
+            }
+
+
+            
         } catch (err) {
             console.error(err);  
             return res.status(500).json({
