@@ -32,8 +32,8 @@ const INSERT_PRODUCT = async (req, res) => {
             const img = req.file ? req.file.filename : null;  
 
 
-            let domain = link.replace(/^(https?:\/\/|www\.)/, ""); 
-            domain = domain.split("/")[0];
+            let domain = link.replace(/^(https?:\/\/|www\.)/, "");
+
             
 
             if (!req.user || req.user.role === "user") {
