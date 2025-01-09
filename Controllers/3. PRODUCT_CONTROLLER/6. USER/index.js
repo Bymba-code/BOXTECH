@@ -34,8 +34,7 @@ const GET_USER_PRODUCT = async (req, res) => {
                         category.name AS category_name,
                         AVG(product_rating.rating) AS average_rating,
                         COUNT(product_reviews.id) AS review_count,
-                        SUM(deposit_history.deposit) AS total_deposit_amount,
-                        COUNT(deposit_history.id) AS deposit_count
+                        SUM(deposit_history.deposit) AS total_deposit_amount
                         FROM
                         products
                         LEFT JOIN category 
