@@ -4,7 +4,7 @@ const {executeQuery} = require("../../../Database/test")
 const INSERT_BANK = async (req, res) => {
     try 
     {
-        const {account, bank, name} = req.body;
+        const {account,name} = req.body;
 
         const khanbankToken = `SELECT * FROM khanbank_token WHERE id = 1`
         const khanbank = await executeQuery(khanbankToken)
@@ -27,14 +27,6 @@ const INSERT_BANK = async (req, res) => {
                 success:false,
                 data: [],
                 message: "Дансны дугаараа оруулна уу."
-            })
-        }
-        if(!bank)
-        {
-            return res.status(403).json({
-                success:false,
-                data: [],
-                message: "Банк сонгоно уу."
             })
         }
         if(!name)
@@ -78,8 +70,8 @@ const INSERT_BANK = async (req, res) => {
         // 2. Идэвхтэй банкны данс эсхийг шалгана
 
         // 3. Өгөгдлийн сан уруу инсертлэнэ
-        const query = "INSERT INTO user_bank (`user`,`account`, `name`,`bank`) VALUES (?,?,?, ?)"
-        const data = await executeQuery(query, [req.user.id, account, name, bank])
+        const query = "INSERT INTO user_bank (`user`,`account`, `name`) VALUES (?,?,?)"
+        const data = await executeQuery(query, [req.user.id, account, name])
 
         if(data.affectedRows === 0)
         {
