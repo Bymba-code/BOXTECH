@@ -47,7 +47,7 @@ SELECT DISTINCT
                         ON products.id = product_reviews.product
                         LEFT JOIN deposit_history 
                         ON products.id = deposit_history.product
-                        WHERE products.user = 5
+                        WHERE products.user = ?
                         GROUP BY 
                         products.id, category.id, deposit_history.id
                         LIMIT ? OFFSET ?
