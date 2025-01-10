@@ -29,7 +29,8 @@ const GET_USER_PRODUCT = async (req, res) => {
 
         const offset = (pageNumber - 1) * pageSize;
 
-        const query =   `SELECT 
+        const query =   `use boxtech;
+SELECT DISTINCT
                         products.*,
                         category.name AS category_name,
                         AVG(product_rating.rating) AS average_rating,
@@ -46,10 +47,11 @@ const GET_USER_PRODUCT = async (req, res) => {
                         ON products.id = product_reviews.product
                         LEFT JOIN deposit_history 
                         ON products.id = deposit_history.product
-                        WHERE products.user = ?
+                        WHERE products.user = 5
                         GROUP BY 
-                        products.id, category.id
-                        LIMIT ? OFFSET ?`
+                        products.id, category.id, deposit_history.id
+                        LIMIT ? OFFSET ?
+`
        
         const data = await executeQuery(query, [req.user.id, size.toString(), offset.toString()])
 
