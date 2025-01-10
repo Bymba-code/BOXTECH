@@ -30,7 +30,7 @@ const GET_USER_PRODUCT = async (req, res) => {
         const offset = (pageNumber - 1) * pageSize;
 
         const query =   `
-                        SELECT DISTINCT
+                         SELECT
                         products.*,
                         category.name AS category_name,
                         AVG(product_rating.rating) AS average_rating,
@@ -49,7 +49,7 @@ const GET_USER_PRODUCT = async (req, res) => {
                         ON products.id = deposit_history.product
                         WHERE products.user = ?
                         GROUP BY 
-                        products.id, category.id, deposit_history.id
+                        products.id, category.id
                         LIMIT ? OFFSET ?
 `
        
