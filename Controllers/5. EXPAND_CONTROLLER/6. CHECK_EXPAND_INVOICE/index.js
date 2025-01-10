@@ -142,6 +142,28 @@ const CHECK_EXPAND_INVOICE = async (req, res) => {
                     }
 
             }
+
+            const startDate = new Date()
+            let endDate = new Date()
+            if(checkout.description === "1 сарын сунгалт")
+            {
+                endDate.setMonth(endDate.getMonth() + 1)
+
+            }
+            if(checkout.description === "2 сарын сунгалт")
+                {
+                endDate.setMonth(endDate.getMonth() + 2)
+    
+                }
+            if(checkout.description === "3 сарын сунгалт")
+                {
+                endDate.setMonth(endDate.getMonth() + 3)
+        
+                }
+
+            const insertNoti = "INSERT INTO notifications (`user`,`title`,`content`,`isView`, `date`) VALUES (? , ? , ? , ? , ?)"
+            const notiData = await executeQuery(insertNoti, [req.user.id , "Амжилттай сунгалаа", `Таны эрх дуусах хугацаа ${endDate.toLocaleDateString()}`, 0, new Date()])
+
             return res.status(200).json({
                 success:true,
                 data:[],
