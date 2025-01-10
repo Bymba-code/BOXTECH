@@ -29,8 +29,8 @@ const GET_USER_PRODUCT = async (req, res) => {
 
         const offset = (pageNumber - 1) * pageSize;
 
-        const query =   `use boxtech;
-SELECT DISTINCT
+        const query =   `
+                        SELECT DISTINCT
                         products.*,
                         category.name AS category_name,
                         AVG(product_rating.rating) AS average_rating,
