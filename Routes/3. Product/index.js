@@ -10,6 +10,7 @@ const DELETE_PRODUCT = require("../../Controllers/3. PRODUCT_CONTROLLER/5. DELET
 const GET_USER_PRODUCT = require("../../Controllers/3. PRODUCT_CONTROLLER/6. USER")
 const multer = require("multer");
 const INSERT_REVIEWS = require("../../Controllers/3. PRODUCT_CONTROLLER/7. REVIEWS")
+const SEARCH_PRODUCTS = require("../../Controllers/3. PRODUCT_CONTROLLER/8. SEARCH")
 
 
 const storage = multer.diskStorage({
@@ -36,5 +37,7 @@ router.route("/product/:productId").get(GET_SINGLE_PRODUCT)
 router.route("/user/product").get(Authenticate, Authorize(["user", "admin"]), GET_USER_PRODUCT)
 
 router.route("/reviews/product/:id").get(INSERT_REVIEWS)
+
+router.route("/product/search/:category/:search").get(SEARCH_PRODUCTS)
 
 module.exports = router
