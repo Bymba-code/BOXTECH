@@ -17,6 +17,7 @@ const commentController = require("./Routes/10. Product_comment")
 const newsController = require("./Routes/11. News")
 const profileController = require("./Routes/12. Profile")
 const notificationController = require("./Routes/14. Notifications")
+const usersRoutes = require("./Routes/16. Users")
 
 
 const app = express()
@@ -49,6 +50,7 @@ app.use(process.env.URL, commentController)
 app.use(process.env.URL, newsController)
 app.use(process.env.URL, profileController)
 app.use(process.env.URL, notificationController)
+app.use(process.env.URL, usersRoutes)
 
 
 
