@@ -3,7 +3,19 @@ const {executeQuery} = require("../../../Database/test")
 const GET_ALL_CATEGORY = async (req, res) => {
     try 
     {
-        const query = "SELECT * FROM category"
+        const query =   `SELECT 
+                        c.*,
+                        COUNT(p.id) AS total_products,
+                        COUNT(dh.id) AS total_sold
+                        FROM 
+                        category c
+                        LEFT JOIN 
+                        products p ON c.id = p.category
+                        LEFT JOIN 
+                        deposit_history dh ON p.id = dh.product
+                        GROUP BY 
+                        c.id
+                    `
 
         const data = await executeQuery(query)
 
