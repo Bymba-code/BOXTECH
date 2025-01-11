@@ -2,7 +2,7 @@ const { executeQuery } = require("../../../Database/test");
 
 const GET_ALL_PRODUCT = async (req, res) => {
   try {
-    const { page = 1, limit = 10, category } = req.query;
+    const { page = 1, limit = 10, category, rating, order } = req.query;
 
     const pageNumber = parseInt(page, 10);
     const pageSize = parseInt(limit, 10);
@@ -43,10 +43,24 @@ const GET_ALL_PRODUCT = async (req, res) => {
 
     query += ` 
                  GROUP BY 
-                   products.id, category.name, users.id, users.username
-                 ORDER BY 
-                   products.date DESC 
-                 LIMIT ? OFFSET ?`;
+                   products.id, category.name, users.id, users.username`;
+
+    if (rating) {
+      query += ` HAVING AVG(product_rating.rating) >= ?`;
+      queryParams.push(rating);
+    }
+
+    if (order === "ASC") {
+      query += ` ORDER BY products.date ASC`; 
+    } else if (order === "DESC") {
+      query += ` ORDER BY products.date DESC`; 
+    } else if (order === "ASCPRICE") {
+      query += ` ORDER BY products.price ASC`; 
+    } else if (order === "DESCPRICE") {
+      query += ` ORDER BY products.price DESC`;
+    } 
+
+    query += ` LIMIT ? OFFSET ?`;
 
     queryParams.push(pageSize.toString(), offset.toString());
 
@@ -61,12 +75,18 @@ const GET_ALL_PRODUCT = async (req, res) => {
     }
 
     let countQuery = `SELECT COUNT(products.id) AS total_products 
-                      FROM products`;
+                      FROM products
+                      LEFT JOIN product_rating ON products.id = product_rating.product`;
 
     const countQueryParams = [];
     if (category && category !== "all") {
       countQuery += ` WHERE products.category = ?`;
       countQueryParams.push(category);
+    }
+
+    if (rating) {
+      countQuery += countQueryParams.length ? ` HAVING AVG(product_rating.rating) >= ?` : ` HAVING AVG(product_rating.rating) >= ?`;
+      countQueryParams.push(rating);
     }
 
     const countResult = await executeQuery(countQuery, countQueryParams);
