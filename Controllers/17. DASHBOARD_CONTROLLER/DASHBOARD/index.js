@@ -97,7 +97,7 @@ const DASHBOARD = async (req , res) => {
                             LIMIT 5`
 
         const queryEight = `SELECT 
-                            COUNT(*)
+                            COUNT(*) AS total_files
                             FROM products
                             `
 
