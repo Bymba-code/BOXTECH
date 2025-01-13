@@ -52,13 +52,13 @@ const GET_USER_PRODUCT = async (req, res) => {
        
         const data = await executeQuery(query, [req.user.id, size.toString(), offset.toString()])
 
-             if(data.length === 0)
+        if(data.length === 0)
         {
             return res.status(404).json({
                 success:false,
                 data: [],
                 message: "Өгөгдөл олдсонгүй"
-            })
+        })
         }
 
 
