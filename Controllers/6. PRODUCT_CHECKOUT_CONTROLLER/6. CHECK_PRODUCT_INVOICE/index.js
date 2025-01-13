@@ -191,7 +191,7 @@ const CHECK_PRODUCT_INVOICE = async (req, res) => {
                 });
 
                 const insertHistory = "INSERT INTO deposit_history (`user`,`product`,`deposit`,`withdraw`,`date`) VALUES (?,?,?,?,?)"
-                const isInsert = await executeQuery(insertHistory, [req.user.id, checkout.product_id, deposit, withdraw, new Date()])
+                const isInsert = await executeQuery(insertHistory, [checkout.product_owner, checkout.product_id, deposit, withdraw, new Date()])
 
                 if(isInsert.affectedRows === 0)
                 {
