@@ -96,6 +96,11 @@ const DASHBOARD = async (req , res) => {
                             ORDER BY deposit_history.date DESC
                             LIMIT 5`
 
+        const queryEight = `SELECT 
+                            COUNT(*)
+                            FROM products
+                            `
+
         const depositWithdraw = await executeQuery(queryOne)
         const invoices = await executeQuery(queryTwo)
         const purchases = await executeQuery(queryThree)
@@ -103,6 +108,7 @@ const DASHBOARD = async (req , res) => {
         const files = await executeQuery(queryFive)
         const totalusers = await executeQuery(querySix)
         const relatedInvoices = await executeQuery(querySeven)
+        const totalFiles = await executeQuery(queryEight)
 
         return res.status(200).json({
             depositWithdraw: depositWithdraw,
@@ -111,7 +117,8 @@ const DASHBOARD = async (req , res) => {
             users:users,
             files:files,
             totalusers: totalusers,
-            relatedInvoices:relatedInvoices
+            relatedInvoices:relatedInvoices,
+            totalFiles:totalFiles
         })
     }
     catch(err)
