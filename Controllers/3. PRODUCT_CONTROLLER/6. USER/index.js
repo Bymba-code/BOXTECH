@@ -30,25 +30,28 @@ const GET_USER_PRODUCT = async (req, res) => {
         const offset = (pageNumber - 1) * pageSize;
 
         const query =   `
-                        SELECT 
+                         SELECT
                         products.*,
                         category.name AS category_name,
-                        users.id AS owner_id,
-                        users.username,
-                        COUNT(DISTINCT product_reviews.id) AS review_count,
                         AVG(product_rating.rating) AS average_rating,
-                        SUM(deposit_history.deposit) AS orlogo
-                        FROM 
+                        COUNT(product_reviews.id) AS review_count,
+                        SUM(deposit_history.deposit) AS total_deposit_amount,
+                        COUNT(deposit_history.id) AS deposit_count
+                        FROM
                         products
-                        LEFT JOIN category ON category.id = products.category
-                        LEFT JOIN users ON products.user = users.id
-                        LEFT JOIN product_reviews ON products.id = product_reviews.product
-                        LEFT JOIN product_rating ON products.id = product_rating.product
-                        LEFT JOIN deposit_history ON products.id = deposit_history.product
-                        WHERE 
-                        users.id = ?
+                        LEFT JOIN category 
+                        ON products.category = category.id
+                        LEFT JOIN product_rating 
+                        ON products.id = product_rating.product
+                        LEFT JOIN product_reviews 
+                        ON products.id = product_reviews.product
+                        LEFT JOIN deposit_history 
+                        ON products.id = deposit_history.product
+                        WHERE products.user = ?
+                        GROUP BY 
+                        products.id, category.id
                         LIMIT ? OFFSET ?
-                        `
+`
        
         const data = await executeQuery(query, [req.user.id, size.toString(), offset.toString()])
 
@@ -58,9 +61,8 @@ const GET_USER_PRODUCT = async (req, res) => {
                 success:false,
                 data: [],
                 message: "Өгөгдөл олдсонгүй"
-        })
+            })
         }
-
 
         return res.status(200).json({
             data:data,
