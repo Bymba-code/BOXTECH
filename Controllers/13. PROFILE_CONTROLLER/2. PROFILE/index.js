@@ -3,7 +3,7 @@ const {executeQuery} = require("../../../Database/test")
 const PROFILE_HOME_DETAIL = async (req , res) => {
     try 
     {
-       const query = `SELECT DISTINCT
+       const query = `SELECT
                         u.id AS user_id,
                         u.username,
                         u.email,
