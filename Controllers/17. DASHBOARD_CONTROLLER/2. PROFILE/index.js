@@ -76,7 +76,7 @@ const DASHBOARD_PROFILE = async (req , res) => {
                             LEFT JOIN product_invoice ON product_checkout.id = product_invoice.checkout_id
                             LEFT JOIN users ON users.id = product_checkout.user
                             LEFT JOIN deposit_history ON deposit_history.product = products.id
-                            WHERE product_invoice.payment = 1 AND products.user = 5
+                            WHERE product_invoice.payment = 1 AND products.user = ?
                             ORDER BY product_invoice.date DESC
                             LIMIT 10`
 
