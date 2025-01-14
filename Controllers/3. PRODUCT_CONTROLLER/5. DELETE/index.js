@@ -28,6 +28,26 @@ const DELETE_PRODUCT = async (req, res) => {
         }
 
         const product = productDB[0]
+
+        if(req.user.role === "admin")
+        {
+            const deleteQuery = "DELETE FROM products WHERE id = ?"
+            const data = await executeQuery(deleteQuery, [id])
+             if(data.affecRows === 0)
+            {
+            return res.status(404).json({
+                success:false,
+                data: [],
+                message: "Файлыг админы эрхээр устгахад алдаа гарлаа"
+            })
+        }
+
+        return res.status(200).json({
+            success:true,
+            data: data,
+            message: "Файлыг админы эрхээр амжилттай устгалаа"
+        })
+        }
         
         if(product.user !== req.user.id)
         {
