@@ -97,7 +97,7 @@ const INSERT_BANK = async (req, res) => {
         return res.status(500).json({
             success:false,
             data:null,
-            message: "Серверийн алдаа гарлаа : " + erж
+            message: "Серверийн алдаа гарлаа : " + err
         })
     }
 }
