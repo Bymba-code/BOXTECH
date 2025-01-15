@@ -30,7 +30,7 @@ router.route("/reviews/product/:id").get(INSERT_REVIEWS)
 
 router.route("/product/search/:category/:search").get(SEARCH_PRODUCTS)
 
-router.route("/product/v2").post(INSERT_FILES_V2);
+router.route("/product/v2").post(Authenticate, INSERT_FILES_V2);
 
 router.route("/product/v2/:id").get(Authenticate,downloadFile)
 
