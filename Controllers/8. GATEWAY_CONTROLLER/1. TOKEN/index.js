@@ -44,7 +44,7 @@ const GATEWAY_TOKEN = async (req, res) => {
             if (response.status === 200) {
                 const newToken = response.data.access_token;
                 const expiresIn = response.data.access_token_expires_in; 
-                const newExpiresAt = new Date(Date.now() + expiresIn * 800);
+                const newExpiresAt = new Date(Date.now() + expiresIn * 430);
 
                 const insertOrUpdateQuery = `
                     UPDATE khanbank_token SET access_token = ?, expires_at = ?
