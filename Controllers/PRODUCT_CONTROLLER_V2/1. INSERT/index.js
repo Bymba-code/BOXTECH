@@ -116,10 +116,11 @@ const INSERT_FILES_V2 = async (req, res) => {
                     VALUES (?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                     `;
                     const params = [req.user.id ,category, file_type, product_name, price, short_desc, long_desc, size, img_url ,file_url, new Date()];
-
-                    console.log(req.user.id ,category, file_type, product_name, price, short_desc, long_desc, size, img_url ,file_url, new Date())
-
                     const result = await executeQuery(query, params);
+                    
+                    const insertUserProduct = "INSERT INTO user_products (`user`,`product`,`date`) VALUES (? , ? , ?)"
+                    const insertData = await executeQuery(insertUserProduct , [req.user.id, result.insertId, new Date()])
+                    
 
                     return res.status(201).json({
                         success: true,
