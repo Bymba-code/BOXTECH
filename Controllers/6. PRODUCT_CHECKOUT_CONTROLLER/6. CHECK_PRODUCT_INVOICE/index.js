@@ -162,8 +162,8 @@ const CHECK_PRODUCT_INVOICE = async (req, res) => {
 
                 const date = new Date()
                 date.setDate(date.getDate() + 3)
-                const updateQueryOne = "UPDATE user_products SET date = ?"
-                const dataTwo = await executeQuery(updateQueryOne, [date])
+                const updateQueryOne = "UPDATE user_products SET date = ? WHERE user = ? AND product = ?"
+                const dataTwo = await executeQuery(updateQueryOne, [date, req.user.id, checkout.product_id])
 
                 // Тооцоо
                 const amount = checkout.price
