@@ -150,17 +150,20 @@ const CHECK_PRODUCT_INVOICE = async (req, res) => {
                     })
                 }
 
-                // INSERT USER PRODUCT
-                const insertQuery = "INSERT INTO user_products (`user`,`product`,`date`) VALUES ( ? , ? , ?)"
-                const inserted = await executeQuery(insertQuery, [req.user.id, checkout.product_id, new Date() ])
-                if(inserted.affectedRows === 0)
+                const queryOne = "SELECT * FROM user_products WHERE user = ? AND product = ?"
+                const dataOne = await executeQuery(queryOne, [req.user.id, checkout.product_id])
+                if(!dataOne)
                 {
-                    return req.status(404).json({
-                        success:false,
-                        data: [],
-                        message: "Файлыг худалдаж авах үеийн алдаа"
-                    })
+                const date = new Date()
+                date.setDate(date.getDate() + 3)
+                const insertQuery = "INSERT INTO user_products (`user`,`product`,`date`) VALUES ( ? , ? , ?)"
+                const inserted = await executeQuery(insertQuery, [req.user.id, checkout.product_id, date ])
                 }
+
+                const date = new Date()
+                date.setDate(date.getDate() + 3)
+                const updateQueryOne = "UPDATE user_products SET date = ?"
+                const dataTwo = await executeQuery(updateQueryOne, [date])
 
                 // Тооцоо
                 const amount = checkout.price
