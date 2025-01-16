@@ -134,7 +134,7 @@ const CREATE_CHECKOUT_INVOICE = async (req, res) => {
         return res.status(500).json({
             success:false,
             data:null,
-            message: "Серверийн алдаа гарлаа : " + access_token
+            message: "Серверийн алдаа гарлаа : " + err
         })
     }
 }
