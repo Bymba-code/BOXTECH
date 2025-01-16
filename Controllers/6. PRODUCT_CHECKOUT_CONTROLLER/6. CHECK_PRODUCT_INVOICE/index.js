@@ -152,7 +152,7 @@ const CHECK_PRODUCT_INVOICE = async (req, res) => {
 
                 const queryOne = "SELECT * FROM user_products WHERE user = ? AND product = ?"
                 const dataOne = await executeQuery(queryOne, [req.user.id, checkout.product_id])
-                if(dataOne.lenght === 0)
+                if(dataOne.length === 0)
                 {
                 const date = new Date()
                 date.setDate(date.getDate() + 3)
