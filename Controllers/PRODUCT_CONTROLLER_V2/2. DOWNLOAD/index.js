@@ -1,3 +1,7 @@
+const { executeQuery } = require("../../../Database/test");
+const path = require('path');
+const fs = require('fs');
+
 const downloadFile = async (req, res) => {
     try {
         const { id } = req.params; 
@@ -73,3 +77,4 @@ const downloadFile = async (req, res) => {
         });
     }
 };
+module.exports = {downloadFile}
