@@ -32,6 +32,6 @@ router.route("/product/search/:category/:search").get(SEARCH_PRODUCTS)
 
 router.route("/product/v2").post(Authenticate, INSERT_FILES_V2);
 
-router.route("/product/v2/:id").get(downloadFile)
+router.route("/product/v2/:id/:token").get(downloadFile)
 
 module.exports = router
