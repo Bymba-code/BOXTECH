@@ -1,7 +1,7 @@
 const multer = require('multer');
 const fs = require('fs');
 const path = require('path');
-const { executeQuery } = require('../../../Database/test'); 
+const { executeQuery } = require('../../../Database/test');
 
 const uploadPath = 'uploads/files';
 
@@ -14,12 +14,12 @@ const storage = multer.memoryStorage();
 const uploadHandler = multer({
     storage: storage,
     limits: {
-        fileSize: 30 * 1024 * 1024 * 1024 
+        fileSize: 30 * 1024 * 1024 * 1024  // Allow up to 30GB file size.
     }
 }).fields([
     { name: 'image', maxCount: 1 },
     { name: 'file', maxCount: 1 }
-])
+]);
 
 const INSERT_FILES_V2 = async (req, res) => {
     uploadHandler(req, res, async (err) => {
@@ -30,34 +30,18 @@ const INSERT_FILES_V2 = async (req, res) => {
             });
         }
 
-        const queryOne = "SELECT * FROM user_subscription WHERE user = ?"
-        const permissionDB = await executeQuery(queryOne, [req.user.id])
-        const permission = permissionDB[0]
-        const date = new Date()
-
-        if(permission.end_date < date)
-        {
-            return res.status(402).json({
-                success:false,
-                data: [],
-                message: "Таны файл байршуулах эрх дууссан байна."
-            })
-        }
-
         try {
-            const { category ,file_type, product_name , price , short_desc , long_desc , size} = req.body;
+            const { category = 1, file_type = "ss", product_name = "23", price = 23, short_desc = "23", long_desc = "23", size = "23", link = "23", date } = req.body;
 
             const imgFile = req.files?.image ? req.files.image[0] : null;
             const fileFile = req.files?.file ? req.files.file[0] : null;
 
-
-
             let img_url = null;
             let file_url = null;
 
-
-            
-
+            if (imgFile) {
+                img_url = `/files/uploads/${imgFile.filename}`;
+            }
 
             if (fileFile) {
                 const { chunkNumber, totalChunks, fileName } = req.body;
@@ -75,7 +59,7 @@ const INSERT_FILES_V2 = async (req, res) => {
                 }
 
                 const chunkPath = path.join(chunkDir, `${chunkNumber}`);
-                fs.writeFileSync(chunkPath, fileFile.buffer); 
+                fs.writeFileSync(chunkPath, fileFile.buffer);
 
                 let allChunksUploaded = true;
                 for (let i = 1; i <= totalChunks; i++) {
@@ -87,56 +71,40 @@ const INSERT_FILES_V2 = async (req, res) => {
 
                 if (allChunksUploaded) {
                     const finalFilePath = path.join(uploadPath, fileName);
-                    const fileStream = fs.createWriteStream(finalFilePath);
 
+                    const fileStream = fs.createWriteStream(finalFilePath, { flags: 'a' });
 
                     for (let i = 1; i <= totalChunks; i++) {
                         const chunkContent = fs.readFileSync(path.join(chunkDir, `${i}`));
-                        fileStream.write(chunkContent);
+                        fileStream.write(chunkContent); 
                     }
 
-                    fileStream.end();
-                    fs.rmdirSync(chunkDir, { recursive: true });
+                    fs.rmdirSync(chunkDir, { recursive: true }); 
 
                     file_url = `/files/uploads/${fileName}`;
 
-                    if (imgFile) {
-                        const imgDir = path.join(uploadPath, "images");
-                        if (!fs.existsSync(imgDir)) {
-                            fs.mkdirSync(imgDir, { recursive: true });
-                        }
-                        const imgPath = path.join(imgDir, `${Date.now()}_${imgFile.originalname}`);
-                        fs.writeFileSync(imgPath, imgFile.buffer);
-                        img_url = `/files/images/${path.basename(imgPath)}`;
-                    }
-        
-
                     const query = `
-                    INSERT INTO products (user,category, file_type, product_name, price, short_desc, long_desc, size, img_url, file, date) 
-                    VALUES (?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                        INSERT INTO products (user, category, file_type, product_name, price, short_desc, long_desc, size, img_url, link, file, date) 
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                     `;
-                    const params = [req.user.id ,category, file_type, product_name, price, short_desc, long_desc, size, img_url ,file_url, new Date()];
+                    const params = [req.user.id, category, file_type, product_name, price, short_desc, long_desc, size, img_url, link, file_url, new Date()];
+
                     const result = await executeQuery(query, params);
-                    
-                    const insertUserProduct = "INSERT INTO user_products (`user`,`product`,`date`) VALUES (? , ? , ?)"
-                    const insertData = await executeQuery(insertUserProduct , [req.user.id, result.insertId, new Date()])
-                    
+
+                    const insertUserProduct = "INSERT INTO user_products (`user`, `product`, `date`) VALUES (?, ?, ?)";
+                    await executeQuery(insertUserProduct, [req.user.id, result.insertId, new Date()]);
 
                     return res.status(201).json({
                         success: true,
                         data: { img_url, file_url, productId: result.insertId },
-                        message: "Файлыг амжилттай байршуулж дууслаа."
+                        message: "Files and product uploaded successfully."
                     });
-
                 }
-                
             }
-
-
 
             return res.status(201).json({
                 success: true,
-                data:"ss",
+                data: "ss",
                 message: "Files and product uploaded successfully."
             });
 
