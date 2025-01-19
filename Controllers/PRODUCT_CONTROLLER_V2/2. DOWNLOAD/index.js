@@ -1,72 +1,72 @@
 const { executeQuery } = require("../../../Database/test");
 const path = require("path");
 const fs = require("fs");
-const jwt = require("jsonwebtoken");
-require("dotenv");
+const jwt = require("jsonwebtoken")
 
 const downloadFile = async (req, res) => {
     try {
-        const { id, token } = req.params;
+        const { fileID, productID, token } = req.params;
 
-        // Step 1: Get product information
-        const queryOne = "SELECT * FROM products WHERE id = ?";
-        const productDB = await executeQuery(queryOne, [id]);
+        const accessToken = jwt.verify(token , process.env.TOKEN_SECRET )
 
-        if (!productDB || productDB.length === 0) {
+
+        const queryOne = `SELECT * FROM user_products WHERE user = ? AND product = ?`
+    
+        const userPermissionDB = await executeQuery(queryOne, [accessToken.id, productID])
+        const userPermission = userPermissionDB[0]
+        
+
+        if (!userPermission) {
+            return res.status(401).send(`
+                <!DOCTYPE html>
+                <html lang="mn">
+                <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <title>Access Denied</title>
+                </head>
+                <body>
+                    <h1>Та файлыг худалдаж авна уу!</h1>
+                    <p>Энэхүү файлд та хандах эрхгүй байна. Түрүүлж худалдаж аваарай.</p>
+                    <a href="/boxtech/store">Худалдаж авах</a>
+                </body>
+                </html>
+            `);
+        }
+
+
+        const today = new Date();
+        if (new Date(userPermission.date) < today) {
+            return res.status(404).send(`
+                <!DOCTYPE html>
+                <html lang="mn">
+                <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <title>Access Expired</title>
+                </head>
+                <body>
+                    <h1>Таны файлыг татаж авах хугацаа дууссан байна.</h1>
+                    <p>Та дахин худалдаж авна уу, тэгээд дахин татаж авах боломжтой болно.</p>
+                    <a href="/boxtech/store">Дахин худалдаж авах</a>
+                </body>
+                </html>
+            `);
+        }
+
+        const query = "SELECT file FROM product_files WHERE id = ?";
+        const productFile = await executeQuery(query, [fileID]);
+
+        if (!productFile || productFile.length === 0) {
             return res.status(404).json({
                 success: false,
-                message: "Product not found.",
+                message: "File not found in the database.",
             });
         }
 
-        const product = productDB[0];
+        const fileName = productFile[0].file;  
 
-        // Step 2: Decode token
-        const accessToken = jwt.verify(token, process.env.TOKEN_SECRET);
-
-        if (accessToken.role === "user") {
-            const queryTwo = "SELECT * FROM user_products WHERE user = ? AND product = ?";
-            const userProductData = await executeQuery(queryTwo, [accessToken.id, id]);
-
-            if (userProductData.length === 0) {
-                return res.status(403).send(`
-                    <!DOCTYPE html>
-                    <html lang="mn">
-                    <head>
-                        <meta charset="UTF-8">
-                        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                        <title>Access Denied</title>
-                    </head>
-                    <body>
-                        <h1>You do not have permission to download this file.</h1>
-                        <p>Please purchase it to gain access.</p>
-                        <a href="/boxtech/store">Purchase File</a>
-                    </body>
-                    </html>
-                `);
-            }
-
-            const expiryDate = new Date(userProductData[0].date);
-            if (expiryDate < new Date()) {
-                return res.status(403).send(`
-                    <!DOCTYPE html>
-                    <html lang="mn">
-                    <head>
-                        <meta charset="UTF-8">
-                        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                        <title>File Access Expired</title>
-                    </head>
-                    <body>
-                        <h1>Your download access has expired.</h1>
-                        <p>Please repurchase the file to regain access.</p>
-                        <a href="/boxtech/store">Repurchase File</a>
-                    </body>
-                    </html>
-                `);
-            }
-        }
-
-        const filePath = path.join(__dirname, "../../../uploads/files", product.file.split("/")[3]);
+        const filePath = path.join(__dirname, "../../../", fileName);
 
         if (!fs.existsSync(filePath)) {
             return res.status(404).json({
@@ -75,34 +75,36 @@ const downloadFile = async (req, res) => {
             });
         }
 
-        // Handle aborted requests
-        const onAbort = () => {
+        res.on("aborted", () => {
             console.log("Client aborted the download request.");
-            // Cleanup operations if required
-        };
+
+        });
 
         res.on("close", () => {
             if (!res.writableEnded) {
                 console.log("Request closed before file download completed.");
-                onAbort();
             }
         });
 
-        return res.download(filePath, product.file.split("/").pop(), (err) => {
+        return res.download(filePath, path.basename(filePath), (err) => {
             if (err && !res.headersSent) {
                 console.error("Error during file download:", err.message);
                 return res.status(500).json({
                     success: false,
-                    message: "An error occurred during file download.",
+                    message: "An error occurred during the download.",
                 });
             }
+
         });
+
     } catch (err) {
         console.error("Error in downloadFile:", err);
-        return res.status(500).json({
-            success: false,
-            message: "Server error occurred.",
-        });
+        if (!res.headersSent) {
+            return res.status(500).json({
+                success: false,
+                message: "Server error occurred.",
+            });
+        }
     }
 };
 
