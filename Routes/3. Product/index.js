@@ -11,10 +11,17 @@ const INSERT_REVIEWS = require("../../Controllers/3. PRODUCT_CONTROLLER/7. REVIE
 const SEARCH_PRODUCTS = require("../../Controllers/3. PRODUCT_CONTROLLER/8. SEARCH")
 const {INSERT_FILES_V2} = require("../../Controllers/PRODUCT_CONTROLLER_V2/1. INSERT")
 const { downloadFile } = require("../../Controllers/PRODUCT_CONTROLLER_V2/2. DOWNLOAD")
+const multer = require("multer")
+
+const { INSERT_CHUNKS } = require("../../Controllers/PRODUCT_CONTROLLER_V2/3.INSERT_CHUNKS")
+
 
 
 
 const router = express.Router()
+
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
 
 router.route("/product")
 .get(GET_ALL_PRODUCT)
@@ -30,8 +37,11 @@ router.route("/reviews/product/:id").get(INSERT_REVIEWS)
 
 router.route("/product/search/:category/:search").get(SEARCH_PRODUCTS)
 
-router.route("/product/v2").post(Authenticate, INSERT_FILES_V2);
+router.route("/product/v2").post(Authenticate, upload.single("image"), INSERT_FILES_V2);
 
-router.route("/product/v2/:id/:token").get(downloadFile)
+router.route("/product/v2/download/:fileID/:productID/:token").get(downloadFile)
+
+router.route("/product/v2/chunks").post(Authenticate,upload.single("chunk"), INSERT_CHUNKS)
+
 
 module.exports = router
