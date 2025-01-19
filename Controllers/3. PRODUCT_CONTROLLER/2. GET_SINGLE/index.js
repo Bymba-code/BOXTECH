@@ -39,6 +39,9 @@ const GET_SINGLE_PRODUCT = async (req, res) => {
                         `
         const data = await executeQuery(query, [productId])
 
+        const queryTwo = "SELECT * FROM product_files WHERE product = ?"
+        const dataTwo = await executeQuery(queryTwo, [productId])
+
         if(data.length === 0)
         {
             return res.status(404).json({
@@ -51,6 +54,7 @@ const GET_SINGLE_PRODUCT = async (req, res) => {
         return res.status(200).json({
             success:true,
             data:data,
+            links: dataTwo,
             message: "Амжилттай"
         })
     }
