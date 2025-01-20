@@ -36,7 +36,7 @@ const downloadFile = async (req, res) => {
 
 
         const today = new Date();
-        if (new Date(userPermission.date) < today) {
+        if (new Date(userPermission.date) <= today) {
             return res.status(404).send(`
                 <!DOCTYPE html>
                 <html lang="mn">
