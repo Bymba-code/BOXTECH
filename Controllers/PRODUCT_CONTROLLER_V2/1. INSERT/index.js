@@ -35,6 +35,16 @@ const INSERT_FILES_V2 = async (req, res) => {
 
         const result = await executeQuery(query, values);
 
+        const queryTwo = "INSERT INTO user_products (`user`,`product`, `date`) VALUES (?, ?, ?)"
+
+        const date = new Date()
+
+        date.setFullYear(date.getFullYear() + 3)
+
+        const data = await executeQuery(queryTwo, [req.user.id, result.insertId, date])
+
+        
+
         return res.status(201).json({
             success: true,
             data: result,
