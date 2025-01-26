@@ -1,53 +1,105 @@
+const fs = require('fs');
+const path = require('path');
+const { promisify } = require('util');
+const stream = require('stream');
+const pipeline = promisify(stream.pipeline);
+
 const { executeQuery } = require('../../../Database/test');
 
-const INSERT_FILES_V2 = async (req, res) => {
-    try {
-        const { category, productName, price, shortDesc, longDesc, size, fileType } = req.body;
+const TEMP_DIR = path.join(__dirname, "../../../uploads/chunks");
+const FINAL_DIR = path.join(__dirname, "../../../uploads/files");
 
-        if (!req.file) {
+// Ensure directories exist
+if (!fs.existsSync(TEMP_DIR)) fs.mkdirSync(TEMP_DIR, { recursive: true });
+if (!fs.existsSync(FINAL_DIR)) fs.mkdirSync(FINAL_DIR, { recursive: true });
+
+const INSERT_CHUNKS = async (req, res) => {
+    try {
+        const { fileName, chunkIndex, totalChunks, productId } = req.body;
+        const chunk = req.file;
+
+        if (!fileName || chunkIndex === undefined || !totalChunks || !chunk || !productId) {
             return res.status(400).json({
                 success: false,
-                data: [],
-                message: "Файл сонгогдоогүй байна",
+                message: "Алдаатай хүсэлт. Шаардлагатай мэдээлэл байхгүй байна.",
             });
         }
 
-        const fileName = req.file.filename; 
-        const filePath = `/uploads/images/${fileName}`; 
+        const chunkFilePath = path.join(TEMP_DIR, `${fileName}.chunk_${chunkIndex}`);
+        
+        try {
+            fs.writeFileSync(chunkFilePath, chunk.buffer);
+        } catch (writeError) {
+            console.error('Chunk Write Error:', writeError);
+            return res.status(500).json({
+                success: false,
+                message: "Файл хадгалахад алдаа гарлаа.",
+            });
+        }
 
-        const query = `
-            INSERT INTO products (
-                user, category, file_type, product_name, price, short_desc, long_desc, size, img_url, date
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        `;
-        const values = [
-            req.user.id,
-            category,
-            fileType,
-            productName,
-            price,
-            shortDesc,
-            longDesc,
-            size,
-            filePath,
-            new Date()
-        ];
+        const allChunksUploaded = Array.from({ length: totalChunks }).every((_, index) =>
+            fs.existsSync(path.join(TEMP_DIR, `${fileName}.chunk_${index}`))
+        );
 
-        const result = await executeQuery(query, values);
+        if (allChunksUploaded) {
+            const finalFilePath = path.join(FINAL_DIR, fileName);
 
-        return res.status(201).json({
+            try {
+                // Increase max listeners
+                const writeStream = fs.createWriteStream(finalFilePath);
+                writeStream.setMaxListeners(0);
+
+                // Async chunk assembly
+                const assembleChunks = async () => {
+                    for (let index = 0; index < totalChunks; index++) {
+                        const chunkPath = path.join(TEMP_DIR, `${fileName}.chunk_${index}`);
+                        const readStream = fs.createReadStream(chunkPath);
+
+                        await pipeline(
+                            readStream, 
+                            writeStream, 
+                            { end: index === totalChunks - 1 }
+                        );
+
+                        fs.unlinkSync(chunkPath);
+                    }
+                };
+
+                await assembleChunks();
+
+                // Database insertion
+                const filePath = path.join("uploads/files", fileName);
+                const query = "INSERT INTO product_files (`product`, `file`) VALUES (?, ?)";
+                const values = [173, filePath];
+
+                await executeQuery(query, values);
+
+                return res.status(200).json({
+                    success: true,
+                    message: `Файл (${fileName}) амжилттай байршлаа.`,
+                });
+
+            } catch (assemblyError) {
+                console.error('File Assembly Error:', assemblyError);
+                return res.status(500).json({
+                    success: false,
+                    message: "Файл үүсгэхэд алдаа гарлаа.",
+                });
+            }
+        }
+
+        return res.status(200).json({
             success: true,
-            data: result,
-            message: "Файл амжилттай бүртгэгдлээ",
+            message: `Файлын ${chunkIndex}-р хэсгийг амжилттай хүлээн авлаа.`,
         });
+
     } catch (err) {
-        console.error("INSERT_FILES_V2 Error:", err);
+        console.error("INSERT_CHUNKS Unhandled Error:", err);
         return res.status(500).json({
             success: false,
-            data: [],
-            message: "Серверийн алдаа гарлаа",
+            message: "Серверийн алдаа гарлаа.",
         });
     }
 };
 
-module.exports = { INSERT_FILES_V2 };
+module.exports = { INSERT_CHUNKS };
