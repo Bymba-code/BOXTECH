@@ -102,7 +102,7 @@ const downloadFile = async (req, res) => {
         if (!res.headersSent) {
             return res.status(500).json({
                 success: false,
-                message: "Server error occurred.",
+                message: "Серверийн алдаа гарлаа.",
             });
         }
     }
