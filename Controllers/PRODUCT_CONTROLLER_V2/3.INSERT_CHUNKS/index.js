@@ -70,7 +70,7 @@ const INSERT_CHUNKS = async (req, res) => {
                 // Database insertion
                 const filePath = path.join("uploads/files", fileName);
                 const query = "INSERT INTO product_files (`product`, `file`) VALUES (?, ?)";
-                const values = [173, filePath];
+                const values = [productId, filePath];
 
                 await executeQuery(query, values);
 
