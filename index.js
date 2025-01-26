@@ -18,6 +18,8 @@ const newsController = require("./Routes/11. News")
 const profileController = require("./Routes/12. Profile")
 const notificationController = require("./Routes/14. Notifications")
 const usersRoutes = require("./Routes/16. Users")
+const nmzRoutes = require("./Routes/20. Nmz")
+
 
 
 const app = express()
@@ -53,6 +55,8 @@ app.use(process.env.URL, newsController)
 app.use(process.env.URL, profileController)
 app.use(process.env.URL, notificationController)
 app.use(process.env.URL, usersRoutes)
+app.use(process.env.URL, nmzRoutes)
+
 
 
 
